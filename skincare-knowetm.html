@@ -3,8 +3,12 @@
         <link rel="stylesheet" href="./style.css">
     </head>
     <body>
-        <div id="appointment-notes" name="skincare-form">
-        </div>
+        <h2>Notes Generator</h2>
+        <div id="client-info" name="client-form"></div>
+        <h2>Massage Appointment Notes</h2>
+        <div id="massage-notes" name="massage-form"></div>
+        <h2>Skincare Appointment Notes</h2>
+        <div id="skincare-notes" name="skincare-form"></div>
 
         <div>
             <div class="flex">
@@ -76,35 +80,82 @@
         }
     }
 
-    // var [occupation_html, occupation_func] = GenerateInputFields("occupation", "text", "Occupation", "Occupation: [VALUE]")
-    //     .In("", "")
-    //     .Build();
-    var [skin_condition_html, skin_condition_func] = GenerateInputFields("skin_condition", "text", "Skin Conditions", "Skin Conditions: [VALUE]")
-        .In("", "")
-        .Build();
-    var [skin_regimen_html, skin_regimen_func] = GenerateInputFields("skin_regimen", "text", "Skin Regimen", "Skin Regimen: [VALUE]")
-        .In("", "")
+    var [intake_html, intake_func] = GenerateInputFields("intake", "radio", "What's the state of the intake?", "Intake: [VALUE]\n")
+        .In("Needs to be Sent", "Needs")
+        .In("Sent", "Sent")
+        .In("Current", "Current")
+        .In("MT Signoff", "MT Signoff")
         .Build();
 
-    // var [confirm_html, confirm_func] = GenerateInputFields("confirm", "radio", "Confirm?", "Confirmation: [VALUE]")
-    //     .In("No", "null")
-    //     .In("Live", "Live")
-    //     .In("Text Message", "TXT")
-    //     .In("Left Voicemail", "LVM")
-    //     .Build();
-    // InsertHTML("skincare-form", confirm_html);
+    InsertHTML("client-form", intake_html);
+    
+    var [member_type_html, member_type_func] = GenerateInputFields("member_type", "radio", "What type of member are they??", "[VALUE]\n")
+        .In("Member", "Mem")
+        .In("Non Member", "NM")
+        .In("New Client", "NC")
+        .In("Associate Member", "Asc Mem")
+        .In("Offsite Member", "Off Mem")
+        .In("Member", "Mem")
+        .In("Terminated", "Term Mem")
+        .In("Suspended", "Sus Mem")
+        .Build();
+    InsertHTML("client-form", member_type_html);
 
-    // InsertHTML("skincare-form", occupation_html);
+    var [banked_session_html, banked_session_func] = GenerateInputFields("banked_session", "radio", "What type of member are they??", "[VALUE]\n")
+        .In("Banked Session", "Banked")
+        .In("Member Rate", "89")
+        .In("Non Member Rate", "129")
+        .In("Gift Card", "GC")
+        .In("Elements Promise", "EP")
+        .Build();
+    InsertHTML("client-form", banked_session_html);
+
+    var [massage_enhancement_html, massage_enhancement_func] = GenerateInputFields("massage_enhancement", "radio", "Did we do an enhancement last time?", "Last Enh: [VALUE]\n")
+        .In("No", "null")
+        .In("Himilayan Salt Stones", "HSS")
+        .In("Cupping", "Cup")
+        .In("Aroma Therapy", "Aroma")
+        .In("CBD Herbal Ritual", "CBD")
+        .Build();
+    InsertHTML("massage-form", massage_enhancement_html);
+    var [massage_enhancement_promo_html, massage_enhancement_promo_func] = GenerateInputFields("massage_enhancement_promo", "radio", "Do they have an enhancment promo?", "Promo: [VALUE]\n")
+        .In("No", "null")
+        .In("Birthday Enhancement", "BDAYU")
+        .In("Elements Promise", "EP")
+        .Build();
+    InsertHTML("massage-form", massage_enhancement_promo_html);
+
+    var [skin_condition_html, skin_condition_func] = GenerateInputFields("skin_condition", "text", "Skin Conditions", "Skin Conditions: [VALUE]\n")
+        .In("", "")
+        .Build();
     InsertHTML("skincare-form", skin_condition_html);
+
+    var [skin_regimen_html, skin_regimen_func] = GenerateInputFields("skin_regimen", "text", "Skin Regimen", "Skin Regimen: [VALUE]\n")
+        .In("", "")
+        .Build();
     InsertHTML("skincare-form", skin_regimen_html);
+
+    var [confirm_html, confirm_func] = GenerateInputFields("confirm", "radio", "Confirmation?", "Confirmation: [VALUE]\n")
+        .In("No", "null")
+        .In("Live", "Live")
+        .In("Text Message", "TXT")
+        .In("Left Voicemail", "LVM")
+        .Build();
+    InsertHTML("client-form", confirm_html);
+    // InsertHTML("skincare-form", occupation_html);
 
     function OnSubmit(){
         var output = "";
 
-        // output += confirm_func();
-        // output += occupation_func() + "\n";
-        output += skin_condition_func() + "\n";
-        output += skin_regimen_func() + "\n";
+        output += member_type_func();
+        output += intake_func();
+        output += massage_enhancement_func();
+        output += massage_enhancement_promo_func();
+        output += banked_session_func();
+        output += "\n";
+        output += "ST\n";
+        output += skin_condition_func();
+        output += skin_regimen_func();
         console.log(output);
         
         document.getElementById("output-field").value = output;

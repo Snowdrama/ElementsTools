@@ -48,9 +48,9 @@
             <button class="button" id="appointment-notes-button" onclick="ChangeTab('appointment-notes')">
                 Appointment Notes
             </button>
-            <!-- <button class="button" id="skincare-button" onclick="ChangeTab('skincare')">
+            <button class="button" id="skincare-button" onclick="ChangeTab('skincare')">
                 Skincare
-            </button> -->
+            </button>
         </div>
         <iframe class="tab selected" id="red-alert" src="./red-alert.html"></iframe>
         <iframe class="tab" id="knowetm" src="./knowetm.html"></iframe>
@@ -58,25 +58,37 @@
         <iframe class="tab" id="skincare" src="./skincare-knowetm.html"></iframe>
     </div>
     <script>
-
         var activeTab = document.querySelector("#red-alert");
         var activeTabButton = document.querySelector("#red-alert-button");
-        function ChangeTab(tabName)
-        {
-            if(activeTab != null){
+        
+        function ChangeTab(tabName) {
+            if (activeTab != null) {
                 activeTab.classList.remove("selected");
             }
-
-            if(activeTabButton != null){
+            if (activeTabButton != null) {
                 activeTabButton.classList.remove("selected");
             }
             
             activeTab = document.querySelector("#" + tabName);
             activeTabButton = document.querySelector("#" + tabName + "-button");
-
-            activeTab.classList.add("selected");
-            activeTabButton.classList.add("selected");
+            
+            if (activeTab && activeTabButton) {
+                activeTab.classList.add("selected");
+                activeTabButton.classList.add("selected");
+                
+                // Update URL with the new tab ID
+                window.location.hash = tabName;
+            }
         }
+        
+        // Select tab based on URL hash when the page loads
+        window.addEventListener("DOMContentLoaded", function() {
+            var hash = window.location.hash.substring(1); // Remove the '#'
+            if (hash) {
+                ChangeTab(hash);
+            }
+        });
+        
     </script>
 </body>
 

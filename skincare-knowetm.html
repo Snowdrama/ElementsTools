@@ -1,0 +1,119 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <div id="appointment-notes" name="skincare-form">
+        </div>
+
+        <div>
+            <div class="flex">
+                <div class="bg-grey padding-10 margin-1 roudned">
+                    <div>
+                        <button onclick="OnSubmit()">Generate</button>
+                        <button onclick="Clear()">Clear</button>
+                    </div>
+                    <textarea id="output-field" style="width: 100%; height: 200px;"></textarea>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script>
+    function GenerateInputFields(name, type, label, format) {
+        let options = [];
+        
+        return {
+            In: function(displayLabel, value) {
+                options.push({ label: displayLabel, value: value });
+                return this;
+            },
+            Build: function() {
+                let html = `<div class="flex">
+                    <div class="bg-grey padding-10 margin-1 roudned">
+                        <label>${label}</label><br>`;
+                
+                if (type === "radio" || type === "checkbox") {
+                    options.forEach((option, index) => {
+                        let checked = index === 0 ? "checked" : "";
+                        html += `<input type="${type}" class="${name} form-control" name="${name}" value="${option.value}" ${checked}> 
+                                <span>${option.label}</span><br>`;
+                    });
+                } else {
+                    html += `<input type="${type}" class="${name} form-control" name="${name}">`;
+                }
+                
+                html += `</div></div>`;
+
+                let gatherFunction = function() {
+                    let inputElements = document.querySelectorAll(`input[name='${name}']`);
+                    
+                    if (type === "radio") {
+                        let selected = document.querySelector(`input[name='${name}']:checked`);
+                        return selected && selected.value !== "null" ? format.replace("[VALUE]", selected.value) : "";
+                    } else if (type === "checkbox") {
+                        let values = Array.from(inputElements)
+                            .filter(el => el.checked)
+                            .map(el => el.value !== "null" ? el.value : null)
+                            .filter(val => val !== null);
+                        return values.length > 0 ? format.replace("[VALUE]", values.join(", ")) : "";
+                    } else {
+                        let inputValue = inputElements[0]?.value || "";
+                        return inputValue && inputValue !== "null" ? format.replace("[VALUE]", inputValue) : "";
+                    }
+                };
+                
+                return [html, gatherFunction];
+            },
+        };
+    }
+
+    function InsertHTML(targetName, htmlString) {
+        let targetElement = document.querySelector(`div[name='${targetName}']`);
+        if (targetElement) {
+            targetElement.innerHTML += htmlString;
+        }
+    }
+
+    // var [occupation_html, occupation_func] = GenerateInputFields("occupation", "text", "Occupation", "Occupation: [VALUE]")
+    //     .In("", "")
+    //     .Build();
+    var [skin_condition_html, skin_condition_func] = GenerateInputFields("skin_condition", "text", "Skin Conditions", "Skin Conditions: [VALUE]")
+        .In("", "")
+        .Build();
+    var [skin_regimen_html, skin_regimen_func] = GenerateInputFields("skin_regimen", "text", "Skin Regimen", "Skin Regimen: [VALUE]")
+        .In("", "")
+        .Build();
+
+    // var [confirm_html, confirm_func] = GenerateInputFields("confirm", "radio", "Confirm?", "Confirmation: [VALUE]")
+    //     .In("No", "null")
+    //     .In("Live", "Live")
+    //     .In("Text Message", "TXT")
+    //     .In("Left Voicemail", "LVM")
+    //     .Build();
+    // InsertHTML("skincare-form", confirm_html);
+
+    // InsertHTML("skincare-form", occupation_html);
+    InsertHTML("skincare-form", skin_condition_html);
+    InsertHTML("skincare-form", skin_regimen_html);
+
+    function OnSubmit(){
+        var output = "";
+
+        // output += confirm_func();
+        // output += occupation_func() + "\n";
+        output += skin_condition_func() + "\n";
+        output += skin_regimen_func() + "\n";
+        console.log(output);
+        
+        document.getElementById("output-field").value = output;
+    }
+    function Clear() {
+        location.reload(true);
+    }
+
+    // To get the selected value:
+    // var confirm_data = confirm_func();
+
+</script>
